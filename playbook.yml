@@ -1,0 +1,65 @@
+---
+- name: ping module 
+  hosts: all
+  become: false
+  tasks:
+    - name: test connection
+      ping:
+
+- name: Update Package on debian system
+  hosts: all
+  become: yes
+  tasks:
+  - name: apt get update 
+    apt:
+      update_cache: yes
+  - name: Install latest version of "openjdk-6-jdk" 
+    apt:
+      name: openjdk-11-jdk
+      state: latest
+      install_recommends: no
+
+- name: Install Jemkins and setup 
+  hosts: all
+  become: yes
+  tasks: 
+    - name: ensure the jenkins apt repository key is installed
+      apt_key: url=https://pkg.jenkins.io/debian-stable/jenkins.io.key state=present
+      become: yes
+    - name: ensure the repository is configured
+      apt_repository: repo='deb https://pkg.jenkins.io/debian-stable binary/' state=present
+      become: yes
+    - name: ensure jenkins is installed
+      apt: name=jenkins update_cache=yes
+      become: yes
+    - name: ensure jenkins is running
+      service: name=jenkins state=started
+
+- name: Install Meven 
+  hosts: all
+  tasks:
+    - name: Install Maven using Ansible
+      become: yes
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - maven
+
+- name: Update Package on debian system
+  hosts: all
+  become: yes
+  tasks:
+  - name: apt get update 
+    apt:
+      update_cache: yes
+
+
+
+
+
+
+
+
+
